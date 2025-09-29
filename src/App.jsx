@@ -79,12 +79,21 @@ export default function App() {
           style={{
             display: "flex",
             justifyContent: "center",
-            gap: "20rem",
+            gap: "10rem",
             margin: "1rem auto 1.5rem",
             width: "100%",
           }}
         >
           <Pill value="my" label="My Workouts" />
+          <Box
+            style={{
+              width: "2px",
+              height: "2.5rem",
+              backgroundColor: theme.colors.gray[3],
+              alignSelf: "center",
+              borderRadius: "1px",
+            }}
+          />
           <Pill value="team" label="Team Workouts" />
         </Box>
 
