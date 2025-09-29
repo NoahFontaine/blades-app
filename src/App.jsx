@@ -12,7 +12,6 @@ import TeamWorkouts from "./pages/TeamWorkouts";
 export default function App() {
   const [view, setView] = useState("my");
   const theme = useMantineTheme();
-  console.log(theme);
 
   const Pill = ({ value, label }) => {
     const active = view === value;
@@ -71,7 +70,7 @@ export default function App() {
         backgroundColor: "white",
       }}
     >
-      <Container fluid py="lg" px={0}>
+      <Container fluid py="lg" px="lg">
         {/* Pill group */}
         <Box
           role="tablist"
