@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, TextInput, Stack, Card, Title, Modal, Group } from "@mantine/core";
 import { Select, NumberInput } from "@mantine/core";
-import { DateInput, TimeInput } from "@mantine/dates";
+import { DateInput, TimePicker } from "@mantine/dates";
 
 export default function MyWorkouts() {
   const [distance, setDistance] = useState("");
@@ -74,14 +74,14 @@ export default function MyWorkouts() {
             searchable
             nothingFoundMessage="No sport"
           />
-            <Select
-              label="Workout Type"
-              placeholder="e.g. Steady, Intervals..."
-              data={["Steady", "Intervals", "Tempo", "Test", "Recovery"]}
-              value={type}
-              onChange={setType}
-              searchable
-            />
+          <Select
+            label="Workout Type"
+            placeholder="e.g. Steady, Intervals..."
+            data={["Steady", "Intervals", "Tempo", "Test", "Recovery"]}
+            value={type}
+            onChange={setType}
+            searchable
+          />
           <Stack gap={4}>
             <span style={{ fontSize: 14, fontWeight: 500 }}>Intensity</span>
             <Group gap="xs">
@@ -121,17 +121,16 @@ export default function MyWorkouts() {
             min={0}
             thousandSeparator=","
           />
-          <NumberInput
-            label="Duration (min)"
-            placeholder="e.g. 30"
+          <TimePicker
+            label="Duration (hr:min)"
             value={duration}
-            onChange={(v) => setDuration(v ? String(v) : "")}
+            onChange={setDuration}
             min={0}
           />
           <DateInput
             label="Date"
-            value={date ? new Date(date) : null}
-            onChange={(d) => setDate(d instanceof Date ? d.toISOString() : "")}
+            value={date}
+            onChange={setDate}
             placeholder="Pick date"
             valueFormat="YYYY-MM-DD"
             clearable
