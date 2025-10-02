@@ -79,7 +79,7 @@ export default function App() {
             display: "flex",
             justifyContent: "center",
             gap: "10rem",
-            margin: "1rem auto 1.5rem",
+            margin: "1rem auto 2.5rem",
             width: "100%",
           }}
         >
