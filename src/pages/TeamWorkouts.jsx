@@ -12,8 +12,8 @@ export default function TeamWorkouts() {
   }, []);
 
   return (
-    <Card shadow="md" radius="lg" withBorder padding="lg">
-      <Title order={3} mb="md">
+    <Card radius="lg" withBorder padding="lg">
+      <Title order={2} mb="md">
         Team Workouts
       </Title>
       {teamWorkouts.length === 0 ? (
