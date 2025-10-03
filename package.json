@@ -12,15 +12,18 @@
   "dependencies": {
     "@mantine/core": "^8.3.3",
     "@mantine/dates": "^8.3.3",
+    "@mantine/form": "^8.3.3",
     "@mantine/hooks": "^8.3.3",
     "@mantine/notifications": "^8.3.3",
     "@tabler/icons-react": "^3.35.0",
     "@visx/visx": "^3.12.0",
     "dayjs": "^1.11.18",
+    "firebase": "^12.3.0",
     "framer-motion": "^12.23.16",
     "lucide-react": "^0.544.0",
     "react": "^18.x",
     "react-dom": "^18.x",
+    "react-router-dom": "^7.9.3",
     "recharts": "^3.2.1"
   },
   "devDependencies": {
