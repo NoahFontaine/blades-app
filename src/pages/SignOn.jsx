@@ -103,8 +103,8 @@ export default function SignOn() {
   return (
     <Center style={{ minHeight: "100vh", background: "#f6f9fc" }}>
       <Paper
-        radius="md"
-        p="xl"
+        radius="lg"
+        p="lg"
         withBorder
         style={{ width: 520, position: "relative" }}
       >
@@ -234,8 +234,8 @@ export default function SignOn() {
           </form>
           <Space h="xs" />
           <Text size="xs" color="dimmed" align="center">
-            By continuing you agree to our terms. Use Google or Email/Password
-            sign-in.
+            By continuing you agree to my terms. Use Google or Email/Password
+            sign-in. Lol are you actually reading this?
           </Text>
         </Stack>
       </Paper>
