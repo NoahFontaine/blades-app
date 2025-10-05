@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { Button, Stack, Card, Title, Modal, Group, Badge } from "@mantine/core";
 import { Select, NumberInput } from "@mantine/core";
 import { DateInput, TimePicker } from "@mantine/dates";
+import { findUserFromName, findUserFromEmail } from "../functions/userFunctions";
 
-export default function MyWorkouts({ role }) {
+export default function MyWorkouts({ signInUser, role }) {
   const [distance, setDistance] = useState("");
   const [type, setType] = useState("");
   const [sport, setSport] = useState("");
@@ -28,19 +29,54 @@ export default function MyWorkouts({ role }) {
     loadWorkouts();
   }, []);
 
-  const addWorkout = async () => {
-    if (!distance) return;
+  const addWorkout = async (distance, date, sport, type, duration, intensity) => {
+    console.log("Adding workout:")
+    if (!submitting) return;
     setSubmitting(true);
+    let user = null;
+
+    // Try to find user by email first, then by name
+    try {
+      const byEmail = await findUserFromEmail(signInUser.email);
+      user = byEmail[0] || null;
+      console.log("user from email:", user);
+    } catch {
+      user = null;
+    }
+
+    if (!user) {
+      try {
+        const byName = await findUserFromName(signInUser.name);
+        user = byName[0] || null;
+      } catch {
+      user = null;
+      }
+    }
+
+    if (!user) {
+      setSubmitting(false);
+      return
+    }
     try {
       await fetch("https://bladeapi.onrender.com/enter_workout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          user: user,
+          sport: sport,
+          type: type,
+          intensity: intensity,
           distance: Number(distance),
-          date: new Date().toISOString(),
+          duration: duration,
+          date: date
         }),
       });
       setDistance("");
+      setSport("");
+      setType("");
+      setDate("");
+      setIntensity("");
+      setDuration("");
       await loadWorkouts();
       setOpened(false);
     } finally {
@@ -163,7 +199,7 @@ export default function MyWorkouts({ role }) {
               Cancel
             </Button>
             <Button
-              onClick={addWorkout}
+              onClick={addWorkout(distance, date, sport, type, duration, intensity)}
               disabled={
                 !distance ||
                 !date ||

@@ -16,17 +16,44 @@ import {
 import { IconLogout, IconUser } from "@tabler/icons-react";
 import MyWorkouts from "./components/MyWorkouts";
 import TeamWorkouts from "./components/TeamWorkouts";
-import { addUser } from "./functions/addUser";
+import { addUser, findUserFromName } from "./functions/userFunctions";
 import { useAuth } from "../Auth";
 
 export default function Home() {
   const [view, setView] = useState("my");
   const [profileOpen, setProfileOpen] = useState(false);
   const theme = useMantineTheme();
-  const { user, signout } = useAuth();
+  const { user: signInUser, signout } = useAuth();
   const [role, setRole] = useState(null);
   const [loadingRole, setLoadingRole] = useState(true);
   const [updatingRole, setUpdatingRole] = useState(false);
+
+  // // Find the user from their name once it's available
+  // const [user, setUser] = useState(null);
+
+  // useEffect(() => {
+  //   if (!signInUser?.name) {
+  //     setUser(null);
+  //     return;
+  //   }
+  //   let cancelled = false;
+  //   (async () => {
+  //     try {
+  //       const data = await findUserFromName(signInUser.name);
+  //       if (!cancelled) {
+  //         setUser(data?.[0] || null);
+  //       }
+  //     } catch (err) {
+  //       if (!cancelled) {
+  //         console.error("user lookup failed:", err);
+  //         setUser(null);
+  //       }
+  //     }
+  //   })();
+  //   return () => {
+  //     cancelled = true;
+  //   };
+  // }, [signInUser?.name]);
 
   const roleOptions = [
     "M1",
@@ -43,12 +70,12 @@ export default function Home() {
 
   // Fetch role once user is available
   useEffect(() => {
-    if (!user) return;
+    if (!signInUser) return;
     let cancelled = false;
     async function fetchRole() {
       setLoadingRole(true);
       try {
-        const user_email = encodeURIComponent(user?.email || "");
+        const user_email = encodeURIComponent(signInUser?.email || "");
         const res = await fetch(
           `https://bladeapi.onrender.com/users?email=${user_email}`
         );
@@ -67,7 +94,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [signInUser]);
 
   async function handleRoleChange(newRole) {
     if (newRole === role || updatingRole) return;
@@ -75,7 +102,7 @@ export default function Home() {
     setRole(newRole);            // optimistic update
     setUpdatingRole(true);
     try {
-      await addUser(user, newRole);
+      await addUser(signInUser, newRole);
     } catch (err) {
       console.error("Role update failed:", err);
       setRole(prev);             // revert on failure
@@ -178,7 +205,7 @@ export default function Home() {
             >
               {(() => {
                 const initials = (() => {
-                  const name = user?.name?.trim();
+                  const name = signInUser?.name?.trim();
                   if (name) {
                     const parts = name.split(/\s+/).filter(Boolean);
                     if (parts.length === 1)
@@ -187,7 +214,7 @@ export default function Home() {
                       parts[0][0] + parts[parts.length - 1][0]
                     ).toUpperCase();
                   }
-                  const email = user?.email;
+                  const email = signInUser?.email;
                   if (email) {
                     const handle = email.split("@")[0];
                     const parts = handle.split(/[\.\-_]+/).filter(Boolean);
@@ -261,7 +288,7 @@ export default function Home() {
         </Box>
 
         <Box role="tabpanel" hidden={view !== "my"}>
-          {view === "my" && <MyWorkouts role={role} />}
+          {view === "my" && <MyWorkouts signInUser={signInUser} role={role} />}
         </Box>
         <Box role="tabpanel" hidden={view !== "team"}>
           {view === "team" && <TeamWorkouts />}
@@ -279,14 +306,14 @@ export default function Home() {
         <Group align="center" mb="md" gap="sm" wrap="nowrap">
           {(() => {
             const initials = (() => {
-              const name = user?.name?.trim();
+              const name = signInUser?.name?.trim();
               if (name) {
                 const parts = name.split(/\s+/).filter(Boolean);
                 if (parts.length === 1)
                   return parts[0].slice(0, 2).toUpperCase();
                 return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
               }
-              const email = user?.email;
+              const email = signInUser?.email;
               if (email) {
                 const handle = email.split("@")[0];
                 const parts = handle.split(/[\.\-_]+/).filter(Boolean);
@@ -309,9 +336,9 @@ export default function Home() {
             );
           })()}
           <Box style={{ flex: 1 }}>
-            <Text fw={600}>{user?.name || "No display name"}</Text>
+            <Text fw={600}>{signInUser?.name || "No display name"}</Text>
             <Text size="sm" c="dimmed">
-              {user?.email || "No email"}
+              {signInUser?.email || "No email"}
             </Text>
             <Group gap={6} mt={8} wrap="nowrap">
               {roleOptions.map((r) => {
