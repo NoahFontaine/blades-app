@@ -10,6 +10,8 @@ import {
   CartesianGrid,
   Legend,
   Cell,
+  LineChart,
+  Line,
 } from "recharts";
 
 const ALL_SPORTS = ["Rowing", "Cycling", "Weights", "Running", "Walking", "OTHER"];
@@ -60,6 +62,7 @@ export default function MyStats({ workouts }) {
     pctLowVeryLow,
     pctMedium,
     pctHighVeryHigh,
+    weeklyHoursSeries,
   } = useMemo(() => {
     const sportTotalMinutes = Object.fromEntries(ALL_SPORTS.map(s => [s, 0]));
     const sportIntensityMinutes = {};
@@ -205,6 +208,25 @@ export default function MyStats({ workouts }) {
     const pctMedium = +( (mediumMinutes / totalIntensityMinutes) * 100 ).toFixed(1);
     const pctHighVeryHigh = +( (highVeryHighMinutes / totalIntensityMinutes) * 100 ).toFixed(1);
 
+    // Build last 5 weeks (including current) Monday-start labels and totals
+    const weeks = []; // from oldest to newest
+    const currentWeekStart = new Date();
+    const dow = (currentWeekStart.getDay() + 6) % 7; // Monday=0
+    currentWeekStart.setHours(0,0,0,0);
+    currentWeekStart.setDate(currentWeekStart.getDate() - dow);
+    for (let i = 4; i >= 0; i--) {
+      const ws = new Date(currentWeekStart);
+      ws.setDate(ws.getDate() - i * 7);
+      const we = new Date(ws);
+      we.setDate(we.getDate() + 7);
+      const label = `${ws.getMonth()+1}/${ws.getDate()}`; // M/D
+      let mins = 0;
+      (workouts||[]).forEach(w=>{
+        if(!w?.date) return; const d=new Date(w.date); if(isNaN(d)) return; if(d>=ws && d<we){ const m = Number(w.duration); if(!isNaN(m)) mins += m; }
+      });
+      weeks.push({ week: label, hours: +(mins/60).toFixed(2) });
+    }
+
     return {
       sportPercentData,
       sportIntensityData,
@@ -223,6 +245,7 @@ export default function MyStats({ workouts }) {
       pctLowVeryLow,
       pctMedium,
       pctHighVeryHigh,
+      weeklyHoursSeries: weeks,
     };
   }, [workouts]);
 
@@ -239,29 +262,55 @@ export default function MyStats({ workouts }) {
       <Card withBorder padding="lg" radius="lg">
         <Group justify="space-between" mb="sm">
           <Title order={2} mb={0}>My Stats</Title>
-          {!empty && (
+          {workoutCount > 0 && (
             <Badge radius="sm" variant="light" color="indigo">
               {workoutCount} workout{workoutCount !== 1 ? "s" : ""}
             </Badge>
           )}
         </Group>
-        {empty ? (
+        {workoutCount === 0 ? (
           <Text c="dimmed" size="sm">No workouts logged yet.</Text>
         ) : (
-          <SimpleGrid cols={{ base: 1, sm: 3, md: 6 }} spacing="md" mt="sm">
-            <Stat label="Total Hours" value={totalHours} suffix="h" />
-            <Stat label="Total Hours this Week" value={totalHoursThisWeek} suffix="h" />
-            <Stat label="Avg Hours / Week" value={avgHoursPerWeek} suffix="h" />
-            <Stat label="Total Distance" value={formatDistance(totalDistanceM)} />
-            <Stat label="Total Distance this Week" value={formatDistance(totalDistanceMWeek)} />
-            <Stat label="Avg Distance / Week" value={formatDistance(avgDistancePerWeek)} />
-            <Stat label="Total Workouts" value={workoutCount} />
-            <Stat label="Workouts this Week" value={weeklyWorkoutsCount} />
-            <Stat label="Avg Workouts / Week" value={avgWorkoutsPerWeek} />
-            <Stat label="Time in Aerobic Intensity" value={pctLowVeryLow} suffix="%" />
-            <Stat label="Time in Medium Intensity" value={pctMedium} suffix="%" />
-            <Stat label="Time in Anaerobic Intensity" value={pctHighVeryHigh} suffix="%" />
-          </SimpleGrid>
+          <div
+            style={{
+              display: 'grid',
+              gap: '1rem',
+              gridTemplateColumns: 'repeat(10, minmax(0, 1fr))',
+              alignItems: 'stretch'
+            }}
+          >
+            {/* Weekly hours line chart spanning 3 stat columns */}
+            <Card withBorder padding="sm" radius="md" style={{ gridColumn: 'span 4' }}>
+              <Text size="xs" c="dimmed" fw={600} tt="uppercase" mb={4}>Weekly Hours</Text>
+              <div style={{ width: '100%', height: 180 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={weeklyHoursSeries} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="week" tick={{ fontSize: 11 }} />
+                    <YAxis width={32} tick={{ fontSize: 11 }} domain={[0, (dataMax) => Math.max(1, Math.ceil(dataMax))]} />
+                    <Tooltip formatter={(v)=>`${v}h`} labelFormatter={(l)=>`Week starting ${l}`} />
+                    <Line type="monotone" dataKey="hours" stroke="#4c6ef5" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+
+            {/* Stats cards each take 1 column; they will wrap naturally below */}
+            <div style={{ gridColumn: 'span 6', display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(6, minmax(0,1fr))' }}>
+              <Stat label="Total Hours" value={totalHours} suffix="h" />
+              <Stat label="Total Hours this Week" value={totalHoursThisWeek} suffix="h" />
+              <Stat label="Avg Hours / Week" value={avgHoursPerWeek} suffix="h" />
+              <Stat label="Total Distance" value={formatDistance(totalDistanceM)} />
+              <Stat label="Total Distance this Week" value={formatDistance(totalDistanceMWeek)} />
+              <Stat label="Avg Distance / Week" value={formatDistance(avgDistancePerWeek)} />
+              <Stat label="Total Workouts" value={workoutCount} />
+              <Stat label="Workouts this Week" value={weeklyWorkoutsCount} />
+              <Stat label="Avg Workouts / Week" value={avgWorkoutsPerWeek} />
+              <Stat label="Time in Aerobic Intensity" value={pctLowVeryLow} suffix="%" />
+              <Stat label="Time in Medium Intensity" value={pctMedium} suffix="%" />
+              <Stat label="Time in Anaerobic Intensity" value={pctHighVeryHigh} suffix="%" />
+            </div>
+          </div>
         )}
       </Card>
 
