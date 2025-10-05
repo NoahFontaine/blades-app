@@ -43,7 +43,6 @@ export default function Home() {
 
   // Fetch role once user is available
   useEffect(() => {
-    console.log("User rollllleeeeeee");
     if (!user) return;
     let cancelled = false;
     async function fetchRole() {
@@ -77,8 +76,6 @@ export default function Home() {
     setUpdatingRole(true);
     try {
       await addUser(user, newRole);
-      // Optional: re-fetch to confirm backend echo
-      // await refetchRole();
     } catch (err) {
       console.error("Role update failed:", err);
       setRole(prev);             // revert on failure
