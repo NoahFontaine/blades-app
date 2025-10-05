@@ -56,7 +56,7 @@ export default function Home() {
         if (!res.ok) throw new Error("Failed role fetch");
         const data = await res.json();
         if (!cancelled) {
-          setRole(data.role || "None");
+          setRole(data.squad || "None");
         }
       } catch {
         if (!cancelled) setRole("None");
@@ -70,17 +70,21 @@ export default function Home() {
     };
   }, [user]);
 
-  function handleRoleChange(newRole) {
+  async function handleRoleChange(newRole) {
     if (newRole === role || updatingRole) return;
     const prev = role;
-    setRole(newRole); // optimistic
+    setRole(newRole);            // optimistic update
     setUpdatingRole(true);
-    addUser(newRole)
-      .catch(() => {
-        // revert on error
-        setRole(prev);
-      })
-      .finally(() => setUpdatingRole(false));
+    try {
+      await addUser(user, newRole);
+      // Optional: re-fetch to confirm backend echo
+      // await refetchRole();
+    } catch (err) {
+      console.error("Role update failed:", err);
+      setRole(prev);             // revert on failure
+    } finally {
+      setUpdatingRole(false);
+    }
   }
 
   const Pill = ({ value, label }) => {

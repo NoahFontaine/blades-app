@@ -1,14 +1,12 @@
 import { useAuth } from "../../Auth";
 
-export async function addUser(user_squad) {
-  const { user } = useAuth();
+export async function addUser(user, user_squad) {
 
   if (!user) {
     throw new Error("No authenticated user");
   }
 
   const payload = {
-    id: user.uid || "",
     email: user.email || "",
     name: user.name || "",
     squad: user_squad || "",
