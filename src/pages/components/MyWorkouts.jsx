@@ -1,16 +1,25 @@
 import { useState, useEffect } from "react";
-import { Button, Stack, Card, Title, Modal, Group, Badge } from "@mantine/core";
-import { Select, NumberInput } from "@mantine/core";
+import {
+  Button,
+  Stack,
+  Card,
+  Title,
+  Modal,
+  Group,
+  Badge,
+  Select,
+  NumberInput,
+} from "@mantine/core";
 import { DateInput, TimePicker } from "@mantine/dates";
-import { findUserFromName, findUserFromEmail } from "../functions/userFunctions";
+import { addWorkout } from "../functions/workoutFunctions";
 
 export default function MyWorkouts({ signInUser, role }) {
   const [distance, setDistance] = useState("");
   const [type, setType] = useState("");
   const [sport, setSport] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(null);
   const [intensity, setIntensity] = useState("");
-  const [duration, setDuration] = useState("");
+  const [durationTime, setDurationTime] = useState("");
   const [workouts, setWorkouts] = useState([]);
   const [opened, setOpened] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -21,7 +30,7 @@ export default function MyWorkouts({ signInUser, role }) {
       const data = await res.json();
       setWorkouts(Array.isArray(data) ? data : []);
     } catch {
-      // ignore for now
+      /* ignore */
     }
   };
 
@@ -29,60 +38,34 @@ export default function MyWorkouts({ signInUser, role }) {
     loadWorkouts();
   }, []);
 
-  const addWorkout = async (distance, date, sport, type, duration, intensity) => {
-    console.log("Adding workout:")
-    if (!submitting) return;
-    setSubmitting(true);
-    let user = null;
+  // Convert durationTime (string) -> minutes (number)
+  const durationMinutes = (() => {
+    if (!durationTime || typeof durationTime !== "string") return 0;
+    const [hh, mm] = durationTime.split(":").map(Number);
+    if (Number.isNaN(hh) || Number.isNaN(mm)) return 0;
+    return hh * 60 + mm;
+  })();
 
-    // Try to find user by email first, then by name
-    try {
-      const byEmail = await findUserFromEmail(signInUser.email);
-      user = byEmail[0] || null;
-      console.log("user from email:", user);
-    } catch {
-      user = null;
-    }
-
-    if (!user) {
-      try {
-        const byName = await findUserFromName(signInUser.name);
-        user = byName[0] || null;
-      } catch {
-      user = null;
-      }
-    }
-
-    if (!user) {
-      setSubmitting(false);
-      return
-    }
-    try {
-      await fetch("https://bladeapi.onrender.com/enter_workout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user: user,
-          sport: sport,
-          type: type,
-          intensity: intensity,
-          distance: Number(distance),
-          duration: duration,
-          date: date
-        }),
-      });
-      setDistance("");
-      setSport("");
-      setType("");
-      setDate("");
-      setIntensity("");
-      setDuration("");
-      await loadWorkouts();
-      setOpened(false);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const handleSave = () =>
+    addWorkout({
+      signInUser,
+      distance,
+      date,
+      sport,
+      type,
+      duration: durationMinutes,
+      intensity,
+      role,
+      setDistance,
+      setDate,
+      setSport,
+      setType,
+      setDuration: () => setDurationTime(null),
+      setIntensity,
+      setSubmitting,
+      loadWorkouts,
+      closeModal: () => setOpened(false),
+    });
 
   return (
     <Stack>
@@ -97,15 +80,20 @@ export default function MyWorkouts({ signInUser, role }) {
         onClose={() => setOpened(false)}
         title={
           <Group gap="sm">
-            <Title order={4} style={{ margin: 0 }}>Log Workout</Title>
+            <Title order={4} style={{ margin: 0 }}>
+              Log Workout
+            </Title>
             <Badge
               variant="light"
               radius="xl"
               color={
-                role?.startsWith("M") ? "teal"
-                : role?.startsWith("W") ? "blue"
-                : role === "Coach" ? "grape"
-                : "gray"
+                role?.startsWith("M")
+                  ? "teal"
+                  : role?.startsWith("W")
+                  ? "blue"
+                  : role === "Coach"
+                  ? "grape"
+                  : "gray"
               }
             >
               {role && role !== "None" ? role : "No squad"}
@@ -131,7 +119,6 @@ export default function MyWorkouts({ signInUser, role }) {
             value={sport}
             onChange={setSport}
             searchable
-            nothingFoundMessage="No sport"
           />
           <Select
             label="Workout Type"
@@ -144,15 +131,15 @@ export default function MyWorkouts({ signInUser, role }) {
           <Stack gap={4}>
             <span style={{ fontSize: 14, fontWeight: 500 }}>Intensity</span>
             <Group gap="xs">
-              {["very low", "low", "medium", "high", "very high"].map((lvl) => {
+              {["Very Low", "Low", "Medium", "High", "Very High"].map((lvl) => {
                 const color =
-                  lvl === "very high"
+                  lvl === "Very High"
                     ? "red"
-                    : lvl === "high"
+                    : lvl === "High"
                     ? "orange"
-                    : lvl === "medium"
+                    : lvl === "Medium"
                     ? "yellow"
-                    : lvl === "low"
+                    : lvl === "Low"
                     ? "teal"
                     : "green";
                 return (
@@ -181,9 +168,10 @@ export default function MyWorkouts({ signInUser, role }) {
             thousandSeparator=","
           />
           <TimePicker
-            label="Duration (hr:min)"
-            value={duration}
-            onChange={setDuration}
+            label="Duration (hh:mm)"
+            value={durationTime}
+            onChange={setDurationTime}
+            withSeconds={false}
             min={0}
           />
           <DateInput
@@ -199,15 +187,15 @@ export default function MyWorkouts({ signInUser, role }) {
               Cancel
             </Button>
             <Button
-              onClick={addWorkout(distance, date, sport, type, duration, intensity)}
+              onClick={handleSave}
               disabled={
+                submitting ||
                 !distance ||
                 !date ||
                 !sport ||
                 !type ||
-                !duration ||
-                !intensity ||
-                submitting
+                !durationMinutes ||
+                !intensity
               }
               loading={submitting}
             >
