@@ -19,10 +19,8 @@ export async function addWorkout({
   loadWorkouts,
   closeModal,
 }) {
-  console.log("Adding workout:");
   if (
     !signInUser ||
-    !distance ||
     !date ||
     !sport ||
     !type ||
