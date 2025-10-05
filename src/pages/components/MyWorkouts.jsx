@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button, Stack, Card, Title, Modal, Group } from "@mantine/core";
+import { Button, Stack, Card, Title, Modal, Group, Badge } from "@mantine/core";
 import { Select, NumberInput } from "@mantine/core";
 import { DateInput, TimePicker } from "@mantine/dates";
 
-export default function MyWorkouts() {
+export default function MyWorkouts({ role }) {
   const [distance, setDistance] = useState("");
   const [type, setType] = useState("");
   const [sport, setSport] = useState("");
@@ -37,7 +37,7 @@ export default function MyWorkouts() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           distance: Number(distance),
-            date: new Date().toISOString(),
+          date: new Date().toISOString(),
         }),
       });
       setDistance("");
@@ -59,7 +59,23 @@ export default function MyWorkouts() {
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={4}>Log Workout</Title>}
+        title={
+          <Group gap="sm">
+            <Title order={4} style={{ margin: 0 }}>Log Workout</Title>
+            <Badge
+              variant="light"
+              radius="xl"
+              color={
+                role?.startsWith("M") ? "teal"
+                : role?.startsWith("W") ? "blue"
+                : role === "Coach" ? "grape"
+                : "gray"
+              }
+            >
+              {role && role !== "None" ? role : "No squad"}
+            </Badge>
+          </Group>
+        }
         centered
         overlayProps={{ opacity: 0.75, blur: 3 }}
         radius="lg"
@@ -68,7 +84,14 @@ export default function MyWorkouts() {
           <Select
             label="Sport"
             placeholder="Choose sport"
-            data={["Rowing", "Cycling", "Running", "Walking", "Climbing", "OTHER"]}
+            data={[
+              "Rowing",
+              "Cycling",
+              "Running",
+              "Walking",
+              "Climbing",
+              "OTHER",
+            ]}
             value={sport}
             onChange={setSport}
             searchable

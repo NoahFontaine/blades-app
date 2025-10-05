@@ -55,7 +55,7 @@ export default function Home() {
         if (!res.ok) throw new Error("Failed role fetch");
         const data = await res.json();
         if (!cancelled) {
-          setRole(data.squad || "None");
+          setRole(data[0]?.squad || "None");
         }
       } catch {
         if (!cancelled) setRole("None");
@@ -261,7 +261,7 @@ export default function Home() {
         </Box>
 
         <Box role="tabpanel" hidden={view !== "my"}>
-          {view === "my" && <MyWorkouts />}
+          {view === "my" && <MyWorkouts role={role} />}
         </Box>
         <Box role="tabpanel" hidden={view !== "team"}>
           {view === "team" && <TeamWorkouts />}
