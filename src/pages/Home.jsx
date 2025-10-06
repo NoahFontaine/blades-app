@@ -12,6 +12,7 @@ import {
   Group,
   Button,
   Divider,
+  Image,
 } from "@mantine/core";
 import { IconLogout, IconUser } from "@tabler/icons-react";
 import MyWorkouts from "./components/MyWorkouts";
@@ -27,33 +28,6 @@ export default function Home() {
   const [role, setRole] = useState(null);
   const [loadingRole, setLoadingRole] = useState(true);
   const [updatingRole, setUpdatingRole] = useState(false);
-
-  // // Find the user from their name once it's available
-  // const [user, setUser] = useState(null);
-
-  // useEffect(() => {
-  //   if (!signInUser?.name) {
-  //     setUser(null);
-  //     return;
-  //   }
-  //   let cancelled = false;
-  //   (async () => {
-  //     try {
-  //       const data = await findUserFromName(signInUser.name);
-  //       if (!cancelled) {
-  //         setUser(data?.[0] || null);
-  //       }
-  //     } catch (err) {
-  //       if (!cancelled) {
-  //         console.error("user lookup failed:", err);
-  //         setUser(null);
-  //       }
-  //     }
-  //   })();
-  //   return () => {
-  //     cancelled = true;
-  //   };
-  // }, [signInUser?.name]);
 
   const roleOptions = [
     "M1",
@@ -169,6 +143,29 @@ export default function Home() {
         position: "relative",
       }}
     >
+      {/* Top-left martlet icon */}
+      <Box
+        style={{
+          position: "absolute",
+          top: 12,
+          left: 20,
+          zIndex: 10,
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+        }}
+        onClick={() => setView("my")}
+        title="Go to My Workouts"
+      >
+        <Image
+          src="/martlet_icon_transparent.png"
+          alt="Club Martlet"
+          w={108}
+          h={108}
+        />
+      </Box>
+
+      {/* Existing top-right user menu */}
       <Box
         style={{
           position: "absolute",
