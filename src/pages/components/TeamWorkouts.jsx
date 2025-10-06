@@ -69,7 +69,7 @@ export default function TeamWorkouts({ signInUser, role }) {
         });
       }
       // Sort newest first
-      data.sort((a,b)=> new Date(b.date) - new Date(a.date));
+      data.sort((a,b) => new Date(b.date) - new Date(a.date));
       setWorkouts(data);
       setFetchedRole(activeRole);
     } catch (e) {
@@ -88,8 +88,8 @@ export default function TeamWorkouts({ signInUser, role }) {
   }, [role, fetchedRole, fetchWorkouts]);
 
   // Aggregate quick stats
-  const totalDistance = workouts.reduce((s,w)=> s + (Number(w.distance)||0), 0);
-  const totalMinutes = workouts.reduce((s,w)=> s + (Number(w.duration)||0), 0);
+  const totalDistance = workouts.reduce((s,w) => s + (Number(w.distance)||0), 0);
+  const totalMinutes = workouts.reduce((s,w) => s + (Number(w.duration)||0), 0);
   const workoutsCount = workouts.length;
 
   const totalHours = (totalMinutes/60).toFixed(1);
