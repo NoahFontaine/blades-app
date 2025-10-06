@@ -13,7 +13,6 @@ import {
   Checkbox,
   LoadingOverlay,
   Notification,
-  Avatar,
   Space,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -101,12 +100,27 @@ export default function SignOn() {
   }
 
   return (
-    <Center style={{ minHeight: "100vh", background: "#f6f9fc" }}>
+    <Center
+      style={{
+        minHeight: "100vh",
+        padding: "2rem",
+        backgroundImage: "url('/martlet_icon.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
       <Paper
         radius="lg"
         p="lg"
         withBorder
-        style={{ width: 520, position: "relative" }}
+        style={{
+          width: 520,
+          position: "relative",
+          backdropFilter: "blur(8px)",
+          background: "rgba(255,255,255,0.9)",
+        }}
       >
         {" "}
         <LoadingOverlay visible={loading} />{" "}
