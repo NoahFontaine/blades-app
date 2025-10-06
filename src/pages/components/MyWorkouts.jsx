@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import {
   Button,
   Stack,
-  Card,
   Title,
   Modal,
   Group,
