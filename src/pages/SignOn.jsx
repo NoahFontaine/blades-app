@@ -118,7 +118,7 @@ export default function SignOn() {
             {mode === "reset" && "Reset password"}{" "}
           </Title>{" "}
           <Text align="center" color="dimmed">
-            Access Blades
+            Access BLADES
           </Text>
           {notice && (
             <Notification
@@ -234,8 +234,7 @@ export default function SignOn() {
           </form>
           <Space h="xs" />
           <Text size="xs" color="dimmed" align="center">
-            By continuing you agree to my terms. Use Google or Email/Password
-            sign-in. Lol are you actually reading this?
+            By continuing you agree to my terms. Lol are you actually reading this?
           </Text>
         </Stack>
       </Paper>
