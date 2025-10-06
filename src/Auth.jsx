@@ -13,13 +13,13 @@ import {
 
 // Prefer environment variables (Vite requires VITE_ prefix)
 const firebaseConfig = {
-  apiKey: "AIzaSyDY6zRtCxzCyBnStRIxdcrrreNrWXeQ5_E",
-  authDomain: "blade-app-6d952.firebaseapp.com",
-  projectId: "blade-app-6d952",
-  storageBucket: "blade-app-6d952.firebasestorage.app",
-  messagingSenderId: "34395823847",
-  appId: "1:34395823847:web:3acc5a41155002f262cc42",
-  measurementId: "G-VLS76CN5NP"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID
 };
 
 // Avoid double init during HMR
