@@ -288,7 +288,7 @@ export default function Home() {
           {view === "my" && <MyWorkouts signInUser={signInUser} role={role} />}
         </Box>
         <Box role="tabpanel" hidden={view !== "team"}>
-          {view === "team" && <TeamWorkouts />}
+          {view === "team" && <TeamWorkouts signInUser={signInUser} role={role} />}
         </Box>
       </Container>
 
