@@ -8,6 +8,7 @@ import {
   Badge,
   Select,
   NumberInput,
+  Textarea,
 } from "@mantine/core";
 import { DateInput, TimePicker } from "@mantine/dates";
 import { addWorkout } from "../functions/workoutFunctions";
@@ -25,6 +26,7 @@ export default function MyWorkouts({ signInUser, role }) {
   const [workouts, setWorkouts] = useState([]);
   const [opened, setOpened] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [notes, setNotes] = useState("");
 
   const loadWorkouts = async () => {
     try {
@@ -58,12 +60,14 @@ export default function MyWorkouts({ signInUser, role }) {
       duration: durationMinutes,
       intensity,
       role,
+      notes,
       setDistance,
       setDate,
       setSport,
       setType,
       setDuration: () => setDurationTime(null),
       setIntensity,
+      setNotes,
       setSubmitting,
       loadWorkouts,
       closeModal: () => setOpened(false),
@@ -183,6 +187,14 @@ export default function MyWorkouts({ signInUser, role }) {
             placeholder="Pick date"
             valueFormat="YYYY-MM-DD"
             clearable
+          />
+          <Textarea
+            label="Notes"
+            placeholder="Optional notes (conditions, splits, how it felt...)"
+            minRows={1}
+            autosize
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
           />
           <Group justify="flex-end" gap="sm" mt="sm">
             <Button variant="subtle" onClick={() => setOpened(false)}>

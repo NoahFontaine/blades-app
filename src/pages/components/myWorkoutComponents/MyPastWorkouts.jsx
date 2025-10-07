@@ -117,7 +117,7 @@ export default function MyPastWorkouts({ workouts = [] }) {
             return (
               <Box key={dateKey}>
                 <Group gap={8} mb={6} align="center" wrap="nowrap">
-                  <Text fw={600} size="sm" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Text component="div" fw={600} size="sm" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     {dateLabel}
                     {weekBadge}
                   </Text>
@@ -171,7 +171,7 @@ export default function MyPastWorkouts({ workouts = [] }) {
                         </div>
                         <Stack gap={2} style={{ flex: 1 }}>
                           <Group gap={6} wrap="wrap" align="center">
-                            <Text fw={600} size="sm">{w.sport || 'Other'}</Text>
+                            <Text component="span" fw={600} size="sm">{w.sport || 'Other'}</Text>
                             {w.type && (
                               <Badge variant="light" size="xs" radius="sm" color="indigo">{w.type}</Badge>
                             )}
@@ -182,9 +182,9 @@ export default function MyPastWorkouts({ workouts = [] }) {
                             )}
                           </Group>
                           <Group gap={10} wrap="wrap" c="dimmed" fz={12}>
-                            {distance && <Text size="xs">{distance}</Text>}
-                            {duration && <Text size="xs">{duration}</Text>}
-                            {w.notes && <Text size="xs" lineClamp={1} style={{ maxWidth: 280 }}>{w.notes}</Text>}
+                            {distance && <Text component="span" size="xs">{distance}</Text>}
+                            {duration && <Text component="span" size="xs">{duration}</Text>}
+                            {w.notes && <Text component="span" size="xs" lineClamp={1} style={{ maxWidth: 280 }}>{`Notes: ${w.notes}`}</Text>}
                           </Group>
                         </Stack>
                       </Group>

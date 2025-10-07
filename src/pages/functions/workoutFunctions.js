@@ -9,12 +9,14 @@ export async function addWorkout({
   duration,      // number (minutes)
   intensity,
   role,
+  notes,
   setDistance,
   setDate,
   setSport,
   setType,
   setDuration,
   setIntensity,
+  setNotes,
   setSubmitting,
   loadWorkouts,
   closeModal,
@@ -67,6 +69,7 @@ export async function addWorkout({
       distance: Number(distance),
       duration: Number(duration),              // decide on minutes
       date: date instanceof Date ? date.toISOString() : date,
+      notes,
     };
 
     const res = await fetch("https://bladeapi.onrender.com/enter_workout", {
@@ -87,6 +90,7 @@ export async function addWorkout({
     setDate(null);
     setIntensity("");
     setDuration("");
+    setNotes("");
     await loadWorkouts();
     closeModal();
   } finally {
