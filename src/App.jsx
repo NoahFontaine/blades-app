@@ -1,8 +1,9 @@
-import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./Auth";
 import SignOn from "./pages/SignOn";
-import Home from "./pages/Home";
+import Home from "./pages/Home.jsx";
+import Workouts from "./pages/Workouts.jsx";
+import Crew from "./pages/Crew.jsx";
 
 function RequireAuth({ children }) {
   const { user, initializing } = useAuth();
@@ -25,6 +26,22 @@ export default function App() {
             element={
               <RequireAuth>
                 <Home />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/workouts"
+            element={
+              <RequireAuth>
+                <Workouts />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/crew"
+            element={
+              <RequireAuth>
+                <Crew />
               </RequireAuth>
             }
           />
