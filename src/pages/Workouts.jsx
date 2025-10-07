@@ -251,57 +251,84 @@ export default function Home() {
               leftSection={<IconLogout size={16} />}
               onClick={async () => {
                 await signout();
-              }}
-            >
-              Sign out
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-      </Box>
+                }}
+                >
+                Sign out
+                </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+              </Box>
 
-      <Container fluid py="lg" px="lg">
-        <Box
-          role="tablist"
-          aria-label="Workout views"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10rem",
-            margin: "1rem auto 2.5rem",
-            width: "100%",
-          }}
-        >
-          <Pill value="my" label="My Workouts" />
-          <Box
-            style={{
-              width: "2px",
-              height: "2.5rem",
-              backgroundColor: theme.colors.gray[3],
-              alignSelf: "center",
-              borderRadius: "1px",
-            }}
-          />
-          <Pill value="team" label="Team Workouts" />
-        </Box>
+              <Container fluid py="lg" px="lg">
+                <Box
+                role="tablist"
+                aria-label="Workout views"
+                style={{
+                  position: "relative",
+                  width: "100vw",
+                  maxWidth: "100%",
+                  height: "3.6rem",
+                  margin: "1rem auto 2.5rem",
+                }}
+                >
+                {/* Center vertical divider */}
+                <Box
+                  aria-hidden="true"
+                  style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "2px",
+                  height: "2.5rem",
+                  backgroundColor: theme.colors.gray[3],
+                  borderRadius: "1px",
+                  }}
+                />
+                {/* My Workouts pill at 35% */}
+                <Box
+                  style={{
+                  position: "absolute",
+                  left: "35%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <Pill value="my" label="My Workouts" />
+                </Box>
+                {/* Team Workouts pill at 65% */}
+                <Box
+                  style={{
+                  position: "absolute",
+                  left: "65%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <Pill value="team" label="Team Workouts" />
+                </Box>
+                </Box>
 
-        <Box role="tabpanel" hidden={view !== "my"}>
-          {view === "my" && <MyWorkouts signInUser={signInUser} role={role} />}
-        </Box>
-        <Box role="tabpanel" hidden={view !== "team"}>
-          {view === "team" && <TeamWorkouts signInUser={signInUser} role={role} />}
-        </Box>
-      </Container>
+                <Box role="tabpanel" hidden={view !== "my"}>
+                {view === "my" && <MyWorkouts signInUser={signInUser} role={role} />}
+                </Box>
+                <Box role="tabpanel" hidden={view !== "team"}>
+                {view === "team" && (
+                  <TeamWorkouts signInUser={signInUser} role={role} />
+                )}
+                </Box>
+              </Container>
 
-      <Modal
-        opened={profileOpen}
-        onClose={() => setProfileOpen(false)}
-        title="Profile"
-        centered
-        radius="lg"
-        size={580}
-      >
-        <Group align="center" mb="md" gap="sm" wrap="nowrap">
-          {(() => {
+              <Modal
+                opened={profileOpen}
+                onClose={() => setProfileOpen(false)}
+                title="Profile"
+                centered
+                radius="lg"
+                size={580}
+              >
+              <Group align="center" mb="md" gap="sm" wrap="nowrap">
+                {(() => {
             const initials = (() => {
               const name = signInUser?.name?.trim();
               if (name) {
