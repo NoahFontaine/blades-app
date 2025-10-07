@@ -30,7 +30,7 @@ export default function Home() {
             </Text>
             <Button fullWidth onClick={() => navigate("/workouts")}>Open Workouts</Button>
           </Paper>
-          
+
         </Group>
       </Stack>
     </Center>
