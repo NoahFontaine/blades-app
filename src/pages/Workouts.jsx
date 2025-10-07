@@ -14,16 +14,14 @@ import {
   Divider,
   Image,
 } from "@mantine/core";
-import { IconLogout, IconUser } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
 import TopBar from "./components/layout/TopBar";
 import MyWorkouts from "./components/MyWorkouts";
 import TeamWorkouts from "./components/TeamWorkouts";
 import { addUser, findUserFromName } from "./functions/userFunctions";
 import { useAuth } from "../Auth";
 
+
 export default function Workouts() {
-  const navigate = useNavigate();
   const [view, setView] = useState("my");
   const [profileOpen, setProfileOpen] = useState(false);
   const theme = useMantineTheme();
