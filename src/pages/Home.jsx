@@ -14,13 +14,7 @@ export default function Home() {
           Welcome{user?.displayName ? `, ${user.displayName.split(" ")[0]}` : ""}. Choose where to go.
         </Text>
         <Group justify="center" gap="lg" wrap="wrap" style={{ width: "100%" }}>
-          <Paper withBorder p="lg" radius="lg" style={{ width: 240 }}>
-            <Title order={4} mb="xs">Workouts</Title>
-            <Text size="sm" c="dimmed" mb="sm">
-              Log your training, view personal and squad analytics.
-            </Text>
-            <Button fullWidth onClick={() => navigate("/workouts")}>Open Workouts</Button>
-          </Paper>
+
           <Paper withBorder p="lg" radius="lg" style={{ width: 240 }}>
             <Title order={4} mb="xs">Crew</Title>
             <Text size="sm" c="dimmed" mb="sm">
@@ -28,6 +22,15 @@ export default function Home() {
             </Text>
             <Button fullWidth onClick={() => navigate("/crew")}>Open Crew</Button>
           </Paper>
+          
+          <Paper withBorder p="lg" radius="lg" style={{ width: 240 }}>
+            <Title order={4} mb="xs">Workouts</Title>
+            <Text size="sm" c="dimmed" mb="sm">
+              Log your training, view personal and squad analytics.
+            </Text>
+            <Button fullWidth onClick={() => navigate("/workouts")}>Open Workouts</Button>
+          </Paper>
+          
         </Group>
       </Stack>
     </Center>
