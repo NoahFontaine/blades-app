@@ -9,6 +9,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
+  signInWithRedirect,
 } from "firebase/auth";
 
 // Prefer environment variables (Vite requires VITE_ prefix)
@@ -74,6 +75,14 @@ export function AuthProvider({ children }) {
       const result = await signInWithPopup(auth, googleProvider);
       return result.user;
     } catch (err) {
+      // Fallback for COOP / popup issues
+      if (
+        err?.code === "auth/popup-blocked" ||
+        err?.code === "auth/popup-closed-by-user"
+      ) {
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      }
       console.error("Google sign-in error:", err.code, err);
       throw new Error(mapError(err.code));
     }
@@ -99,7 +108,7 @@ export function AuthProvider({ children }) {
     }
   }
 
-  function sendResetEmail(email) {
+  async function sendResetEmail(email) {
     return sendPasswordResetEmail(auth, email).catch((err) => {
       console.error("Reset error:", err.code, err);
       throw new Error(mapError(err.code));

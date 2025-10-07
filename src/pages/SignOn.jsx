@@ -122,18 +122,17 @@ export default function SignOn() {
           background: "rgba(255,255,255,0.9)",
         }}
       >
-        {" "}
-        <LoadingOverlay visible={loading} />{" "}
+        <LoadingOverlay visible={loading} />
         <Stack spacing="sm">
-          {" "}
-          <Title order={2} align="center">
+          <Title order={2} ta="center">
             {mode === "signin" && "Sign in"}
             {mode === "signup" && "Create account"}
-            {mode === "reset" && "Reset password"}{" "}
-          </Title>{" "}
-          <Text align="center" color="dimmed">
+            {mode === "reset" && "Reset password"}
+          </Title>
+          <Text ta="center" c="dimmed">
             Access BLADES
           </Text>
+
           {notice && (
             <Notification
               icon={
@@ -144,8 +143,10 @@ export default function SignOn() {
               {notice.message}
             </Notification>
           )}
+
+          {/* FIX: leftIcon -> leftSection */}
           <Button
-            leftIcon={<IconBrandGoogle size={18} />}
+            leftSection={<IconBrandGoogle size={18} />}
             variant="outline"
             radius="md"
             onClick={handleGoogle}
@@ -153,15 +154,16 @@ export default function SignOn() {
           >
             Continue with Google
           </Button>
+
           <Divider label="Or" labelPosition="center" />
+
           <form
             onSubmit={(e) => {
               e.preventDefault();
               const values = form.values;
               if (mode === "reset") return handleReset(values);
               const validation = form.validate();
-              if (Object.keys(validation.errors).length === 0)
-                handleSubmit(values);
+              if (Object.keys(validation.errors).length === 0) handleSubmit(values);
             }}
           >
             <Stack>
@@ -181,6 +183,7 @@ export default function SignOn() {
                 icon={<IconMail size={14} />}
                 {...form.getInputProps("email")}
               />
+
               {mode !== "reset" && (
                 <PasswordInput
                   required
@@ -192,12 +195,17 @@ export default function SignOn() {
               )}
 
               {mode === "signin" && (
-                <Group position="apart" align="center">
+                <Group justify="space-between" align="center">
                   <Checkbox
                     label="Remember me"
                     {...form.getInputProps("remember", { type: "checkbox" })}
                   />
-                  <Button variant="subtle" onClick={() => setMode("reset")}>
+                  {/* FIX: remove compact, optionally set size */}
+                  <Button
+                    variant="subtle"
+                    size="xs"
+                    onClick={() => setMode("reset")}
+                  >
                     Forgot password?
                   </Button>
                 </Group>
@@ -211,14 +219,14 @@ export default function SignOn() {
                   : "Send reset email"}
               </Button>
 
-              <Group position="apart" spacing="xs">
+              <Group justify="space-between" gap="xs">
                 {mode === "signin" ? (
                   <Text size="sm">
                     Don't have an account?{" "}
                     <Button
                       variant="subtle"
+                      size="xs"
                       onClick={() => setMode("signup")}
-                      compact
                     >
                       Sign up
                     </Button>
@@ -228,8 +236,8 @@ export default function SignOn() {
                     Already have an account?{" "}
                     <Button
                       variant="subtle"
+                      size="xs"
                       onClick={() => setMode("signin")}
-                      compact
                     >
                       Sign in
                     </Button>
@@ -237,8 +245,8 @@ export default function SignOn() {
                 ) : (
                   <Button
                     variant="subtle"
+                    size="xs"
                     onClick={() => setMode("signin")}
-                    compact
                   >
                     Back to sign in
                   </Button>
@@ -246,8 +254,10 @@ export default function SignOn() {
               </Group>
             </Stack>
           </form>
+
           <Space h="xs" />
-          <Text size="xs" color="dimmed" align="center">
+
+          <Text size="xs" c="dimmed" ta="center">
             By continuing you agree to my terms. Lol are you actually reading this?
           </Text>
         </Stack>
