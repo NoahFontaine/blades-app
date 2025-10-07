@@ -1,5 +1,7 @@
 import { findUserFromEmail, findUserFromName } from "./userFunctions";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export async function addWorkout({
   signInUser,
   distance,
@@ -72,7 +74,7 @@ export async function addWorkout({
       notes,
     };
 
-    const res = await fetch("https://bladeapi.onrender.com/enter_workout", {
+    const res = await fetch(`${API_BASE}/enter_workout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

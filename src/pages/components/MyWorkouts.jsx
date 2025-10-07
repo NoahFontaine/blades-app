@@ -15,6 +15,7 @@ import { addWorkout } from "../functions/workoutFunctions";
 import MyPastWorkouts from "./myWorkoutComponents/MyPastWorkouts";
 import MyStats from "./myWorkoutComponents/MyStats";
 
+const API_BASE = import.meta.env.VITE_API_BASE
 
 export default function MyWorkouts({ signInUser, role }) {
   const [distance, setDistance] = useState("");
@@ -30,7 +31,7 @@ export default function MyWorkouts({ signInUser, role }) {
 
   const loadWorkouts = async () => {
     try {
-      const res = await fetch("https://bladeapi.onrender.com/workouts");
+      const res = await fetch(`${API_BASE}/workouts`);
       const data = await res.json();
       setWorkouts(Array.isArray(data) ? data : []);
     } catch {

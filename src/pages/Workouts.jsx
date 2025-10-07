@@ -20,6 +20,7 @@ import TeamWorkouts from "./components/TeamWorkouts";
 import { addUser, findUserFromName } from "./functions/userFunctions";
 import { useAuth } from "../Auth";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function Workouts() {
   const [view, setView] = useState("my");
@@ -52,7 +53,7 @@ export default function Workouts() {
       try {
         const user_email = encodeURIComponent(signInUser?.email || "");
         const res = await fetch(
-          `https://bladeapi.onrender.com/users?email=${user_email}`
+          `${API_BASE}/users?email=${user_email}`
         );
         if (!res.ok) throw new Error("Failed role fetch");
         const data = await res.json();

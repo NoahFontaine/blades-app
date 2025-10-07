@@ -3,6 +3,8 @@ import { Loader, Text } from "@mantine/core";
 import TeamPastWorkouts from "./teamWorkoutComponents/TeamPastWorkouts";
 import TeamStats from "./teamWorkoutComponents/TeamStats";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export default function TeamWorkouts({ signInUser, role }) {
   const [teamWorkouts, setTeamWorkouts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +20,7 @@ export default function TeamWorkouts({ signInUser, role }) {
       setError(null);
       try {
         const qs = role === "Coach" ? "" : `?squad=${encodeURIComponent(role)}`;
-        const res = await fetch(`https://bladeapi.onrender.com/workouts${qs}`);
+        const res = await fetch(`${API_BASE}/workouts${qs}`);
         if (!res.ok) throw new Error("Bad response");
         const data = await res.json();
         if (cancelled) return;
