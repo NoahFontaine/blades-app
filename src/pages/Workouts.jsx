@@ -15,12 +15,15 @@ import {
   Image,
 } from "@mantine/core";
 import { IconLogout, IconUser } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
+import TopBar from "./components/layout/TopBar";
 import MyWorkouts from "./components/MyWorkouts";
 import TeamWorkouts from "./components/TeamWorkouts";
 import { addUser, findUserFromName } from "./functions/userFunctions";
 import { useAuth } from "../Auth";
 
-export default function Home() {
+export default function Workouts() {
+  const navigate = useNavigate();
   const [view, setView] = useState("my");
   const [profileOpen, setProfileOpen] = useState(false);
   const theme = useMantineTheme();
@@ -143,192 +146,85 @@ export default function Home() {
         position: "relative",
       }}
     >
-      {/* Top-left martlet icon */}
-      <Box
-        style={{
-          position: "absolute",
-          top: 12,
-          left: 20,
-          zIndex: 10,
-          display: "flex",
-          alignItems: "center",
-          gap: "0.5rem",
-        }}
-        onClick={() => setView("my")}
-        title="Go to My Workouts"
-      >
-        <Image
-          src="/martlet_icon_transparent.png"
-          alt="Club Martlet"
-          w={108}
-          h={108}
-        />
-      </Box>
+      <TopBar
+        user={signInUser}
+        signout={signout}
+        role={role}
+        roleOptions={roleOptions}
+        onRoleChange={handleRoleChange}
+        showRoleSelector
+      />
 
-      {/* Existing top-right user menu */}
-      <Box
-        style={{
-          position: "absolute",
-          top: 12,
-          right: 14,
-          zIndex: 10,
-        }}
-      >
-        <Menu
-          width={190}
-          position="left-end"
-          radius="lg"
-          shadow="sm"
-          withinPortal
+      <Container fluid py="lg" px="lg">
+        <Box
+          role="tablist"
+          aria-label="Workout views"
+          style={{
+            position: "relative",
+            width: "100vw",
+            maxWidth: "100%",
+            height: "3.6rem",
+            margin: "1rem auto 2.5rem",
+          }}
         >
-          <Menu.Target>
-            <UnstyledButton
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                padding: "0.4rem 0.4rem",
-                background: "white",
-                borderRadius: 999,
-                cursor: "pointer",
-                transition: "background-color 120ms,border-color 120ms",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = theme.colors.gray[2])
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "white")
-              }
-            >
-              {(() => {
-                const initials = (() => {
-                  const name = signInUser?.name?.trim();
-                  if (name) {
-                    const parts = name.split(/\s+/).filter(Boolean);
-                    if (parts.length === 1)
-                      return parts[0].slice(0, 2).toUpperCase();
-                    return (
-                      parts[0][0] + parts[parts.length - 1][0]
-                    ).toUpperCase();
-                  }
-                  const email = signInUser?.email;
-                  if (email) {
-                    const handle = email.split("@")[0];
-                    const parts = handle.split(/[\.\-_]+/).filter(Boolean);
-                    if (parts.length === 0) return "?";
-                    if (parts.length === 1)
-                      return parts[0].slice(0, 2).toUpperCase();
-                    return (
-                      parts[0][0] + parts[parts.length - 1][0]
-                    ).toUpperCase();
-                  }
-                  return "?";
-                })();
-                return (
-                  <Avatar
-                    radius="xl"
-                    size={38}
-                    color="gray"
-                    style={{ fontSize: rem(14), fontWeight: 600 }}
-                  >
-                    {initials}
-                  </Avatar>
-                );
-              })()}
-            </UnstyledButton>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Label>Account</Menu.Label>
-            <Menu.Item
-              leftSection={<IconUser size={16} />}
-              onClick={() => setProfileOpen(true)}
-            >
-              Profile
-            </Menu.Item>
-            <Divider />
-            <Menu.Item
-              color="red"
-              leftSection={<IconLogout size={16} />}
-              onClick={async () => {
-                await signout();
-                }}
-                >
-                Sign out
-                </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-              </Box>
+          {/* Center vertical divider */}
+          <Box
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "2px",
+              height: "2.5rem",
+              backgroundColor: theme.colors.gray[3],
+              borderRadius: "1px",
+            }}
+          />
+          {/* My Workouts pill at 35% */}
+          <Box
+            style={{
+              position: "absolute",
+              left: "35%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Pill value="my" label="My Workouts" />
+          </Box>
+          {/* Team Workouts pill at 65% */}
+          <Box
+            style={{
+              position: "absolute",
+              left: "65%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <Pill value="team" label="Team Workouts" />
+          </Box>
+        </Box>
 
-              <Container fluid py="lg" px="lg">
-                <Box
-                role="tablist"
-                aria-label="Workout views"
-                style={{
-                  position: "relative",
-                  width: "100vw",
-                  maxWidth: "100%",
-                  height: "3.6rem",
-                  margin: "1rem auto 2.5rem",
-                }}
-                >
-                {/* Center vertical divider */}
-                <Box
-                  aria-hidden="true"
-                  style={{
-                  position: "absolute",
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: "2px",
-                  height: "2.5rem",
-                  backgroundColor: theme.colors.gray[3],
-                  borderRadius: "1px",
-                  }}
-                />
-                {/* My Workouts pill at 35% */}
-                <Box
-                  style={{
-                  position: "absolute",
-                  left: "35%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Pill value="my" label="My Workouts" />
-                </Box>
-                {/* Team Workouts pill at 65% */}
-                <Box
-                  style={{
-                  position: "absolute",
-                  left: "65%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <Pill value="team" label="Team Workouts" />
-                </Box>
-                </Box>
+        <Box role="tabpanel" hidden={view !== "my"}>
+          {view === "my" && <MyWorkouts signInUser={signInUser} role={role} />}
+        </Box>
+        <Box role="tabpanel" hidden={view !== "team"}>
+          {view === "team" && (
+            <TeamWorkouts signInUser={signInUser} role={role} />
+          )}
+        </Box>
+      </Container>
 
-                <Box role="tabpanel" hidden={view !== "my"}>
-                {view === "my" && <MyWorkouts signInUser={signInUser} role={role} />}
-                </Box>
-                <Box role="tabpanel" hidden={view !== "team"}>
-                {view === "team" && (
-                  <TeamWorkouts signInUser={signInUser} role={role} />
-                )}
-                </Box>
-              </Container>
-
-              <Modal
-                opened={profileOpen}
-                onClose={() => setProfileOpen(false)}
-                title="Profile"
-                centered
-                radius="lg"
-                size={580}
-              >
-              <Group align="center" mb="md" gap="sm" wrap="nowrap">
-                {(() => {
+      <Modal
+        opened={profileOpen}
+        onClose={() => setProfileOpen(false)}
+        title="Profile"
+        centered
+        radius="lg"
+        size={580}
+      >
+        <Group align="center" mb="md" gap="sm" wrap="nowrap">
+          {(() => {
             const initials = (() => {
               const name = signInUser?.name?.trim();
               if (name) {
