@@ -3,7 +3,9 @@ import { Stack, Title, Text, Box } from "@mantine/core";
 import TopBar from "./components/layout/TopBar";
 import { useAuth } from "../Auth";
 import { addUser, findUserFromName } from "./functions/userFunctions";
+import Calendar from "./components/Calendar";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function Crew() {
   const [role, setRole] = useState(null);
@@ -33,7 +35,7 @@ export default function Crew() {
       try {
         const user_email = encodeURIComponent(signInUser?.email || "");
         const res = await fetch(
-          `https://bladeapi.onrender.com/users?email=${user_email}`
+          `${API_BASE}/users?email=${user_email}`
         );
         if (!res.ok) throw new Error("Failed role fetch");
         const data = await res.json();
@@ -76,13 +78,12 @@ export default function Crew() {
         roleOptions={roleOptions}
         onRoleChange={handleRoleChange}
       />
-    <div style={{ height: 100 }} />
-      <Stack p="xl">
-        <Title order={2}>Crew</Title>
-        <Text c="dimmed" size="sm">
-          Crew overview coming soon. (Add roster, role management, leaderboards,
-          etc.)
-        </Text>
+      <div style={{ height: 100 }} />
+      <Stack p="xl" gap="xl">
+        <div>
+          <Title order={2}>Crew</Title>
+        </div>
+        <Calendar userEmail={signInUser?.email} />
       </Stack>
     </Box>
   );
